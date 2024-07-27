@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moon Phases</title>
+
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        overflow: hidden;
+        background: black;
+      }
+
+      svg {
+        height: 90vh;
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="0 0 400 700"></svg>
+
+    <script>
+      const makeMoonPhases = () => {
+        const svg = document.querySelector("svg");
+
+        for (let j = 0; j < 7; j++) {
+          for (let i = 0; i < 4; i++) {
+            const moon = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle"
+            );
+            moon.setAttribute("cx", 50 + i * 100);
+            moon.setAttribute("cy", 50 + j * 100);
+            moon.setAttribute("r", 35);
+            moon.setAttribute("fill", "white");
+            // moon.setAttribute("stroke", "white");
+            // moon.setAttribute("stroke-width", 2);
+            // svg.appendChild(moon);
+
+            const moonMask = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "mask"
+            );
+            moonMask.setAttribute("id", `moon-mask-${i}-${j}`);
+            moonMask.appendChild(moon);
+
+            svg.appendChild(moonMask);
+
+            const realMoon = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle"
+            );
+
+            const dayCounter = j * 4 + i;
+
+            let invert = false;
+            if (dayCounter >= 7 && dayCounter <= 20) {
+              invert = true;
+            }
+
+            realMoon.setAttribute("cx", 50 + i * 100);
+            realMoon.setAttribute("cy", 50 + j * 100);
+            realMoon.setAttribute("r", 35);
+            realMoon.setAttribute("fill", invert ? "white" : "black");
+            realMoon.setAttribute("stroke", "white");
+            realMoon.setAttribute("stroke-width", 2);
+
+            svg.appendChild(realMoon);
+
+            // realMoon.setAttribute("mask", `url(#moon-mask-${i}-${j})`);
+
+            // const dayCounter = j * 4 + i;
+            // Huh.... why not 14??
+            // const xOffset = 14 - dayCounter;
+
+            const dayPercent = dayCounter / 28;
+            // YES THIS IS IT!!!!
+            const xOffsetScale = Math.tan(dayPercent * 2 * Math.PI);
+            let xOffset = 50 * xOffsetScale;
+            // Took way too long to think of this lol
+            let moonShadowRadius = Math.sqrt(xOffset * xOffset + 50 * 50);
+
+            console.log(dayCounter, xOffset, moonShadowRadius);
+
+            if (xOffset > 100_000) {
+              xOffset = -100_000;
+              moonShadowRadius = 100_000;
+            }
+
+            const moonShadow = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle"
+            );
+            moonShadow.setAttribute("cx", 50 + i * 100 + xOffset);
+            moonShadow.setAttribute("cy", 50 + j * 100);
+            moonShadow.setAttribute("r", moonShadowRadius);
+            moonShadow.setAttribute("fill", invert ? "black" : "white");
+            moonShadow.setAttribute("mask", `url(#moon-mask-${i}-${j})`);
+            svg.appendChild(moonShadow);
+
+            // console.log(j * 4 + i);
+          }
+        }
+
+        // const rect = document.createElementNS(
+        //   "http://www.w3.org/2000/svg",
+        //   "rect"
+        // );
+        // rect.setAttribute("x", 100);
+        // rect.setAttribute("y", 100);
+        // rect.setAttribute("width", 200);
+        // rect.setAttribute("height", 200);
+        // rect.setAttribute("fill", "green");
+        // rect.setAttribute("mask", "url(#moon-mask-1-1)");
+
+        // svg.append(rect);
+      };
+
+      makeMoonPhases();
+    </script>
+  </body>
+</html>
