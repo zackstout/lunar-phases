@@ -51,6 +51,9 @@
 
             svg.appendChild(moonMask);
 
+            // what if we just use the original moon as the mask? -- nope did not work
+            moonMask.setAttribute("id", `moon-mask-${i}-${j}`);
+
             const realMoon = document.createElementNS(
               "http://www.w3.org/2000/svg",
               "circle"
@@ -100,6 +103,9 @@
             moonShadow.setAttribute("cy", 50 + j * 100);
             moonShadow.setAttribute("r", moonShadowRadius);
             moonShadow.setAttribute("fill", invert ? "black" : "white");
+            // moonShadow.setAttribute("mask", `url(#moon-mask-${i}-${j})`);
+
+            // what if we just use original moon circle as mask?? (update id) -- does not work!
             moonShadow.setAttribute("mask", `url(#moon-mask-${i}-${j})`);
             svg.appendChild(moonShadow);
 
